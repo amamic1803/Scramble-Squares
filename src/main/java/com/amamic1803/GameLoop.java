@@ -1,5 +1,7 @@
 package com.amamic1803;
 
+import com.amamic1803.screen.Screen;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameLoop implements Runnable {
@@ -18,11 +20,12 @@ public class GameLoop implements Runnable {
     }
 
     public void stopGame() {
-        running.set(false);
-        try {
-            gameThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (running.getAndSet(false)) {
+            try {
+                gameThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
