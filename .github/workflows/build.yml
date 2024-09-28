@@ -29,4 +29,6 @@ jobs:
           java-version: '22'
 
       - name: Build
-        run: ./gradlew build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
