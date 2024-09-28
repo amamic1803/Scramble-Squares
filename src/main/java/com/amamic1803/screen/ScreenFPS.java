@@ -1,6 +1,6 @@
 package com.amamic1803.screen;
 
-public enum FPS {
+public enum ScreenFPS {
     FPS30(30),
     FPS60(60),
     FPS90(90),
@@ -8,7 +8,7 @@ public enum FPS {
 
     private final int value;
 
-    FPS(int value) {
+    ScreenFPS(int value) {
         this.value = value;
     }
 

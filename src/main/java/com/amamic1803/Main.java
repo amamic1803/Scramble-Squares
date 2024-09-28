@@ -1,7 +1,8 @@
 package com.amamic1803;
 
 import com.amamic1803.screen.DesktopScreen;
-import com.amamic1803.screen.FPS;
+import com.amamic1803.screen.ScreenFPS;
+import com.amamic1803.screen.ScreenState;
 import jico.Ico;
 import jico.ImageReadException;
 
@@ -34,7 +35,7 @@ public class Main {
 
         window.setLayout(new BorderLayout());
 
-        DesktopScreen screen = new DesktopScreen(window, FPS.FPS60);
+        DesktopScreen screen = new DesktopScreen(window, ScreenFPS.FPS60, ScreenState.Window);
         window.add(screen, BorderLayout.CENTER);
 
         GameLoop gameLoop = new GameLoop(screen);
