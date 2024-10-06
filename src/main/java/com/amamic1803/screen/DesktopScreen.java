@@ -4,17 +4,19 @@ import com.amamic1803.drawing.DrawingObject;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.*;
+import java.awt.GraphicsDevice;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DesktopScreen extends JPanel implements Screen {
     private int FPS;
-    private WeakReference<JFrame> window;
+    private final WeakReference<JFrame> window;
     private List<DrawingObject> drawingObjects = new ArrayList<>();
     private ScreenState screenState;
-    private static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+    private final static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
     public DesktopScreen(JFrame window, ScreenFPS fps, ScreenState screenState) {
         this.window = new WeakReference<>(window);
@@ -40,26 +42,32 @@ public class DesktopScreen extends JPanel implements Screen {
     @Override
     public void setScreenState(ScreenState screenState) {
         JFrame window = this.window.get();
-
         if (screenState == this.screenState || window == null) {
             return;
         }
 
+        window.dispose();
         switch (screenState) {
-            case Window -> {}
+            case Window -> {
+                device.setFullScreenWindow(null);
+                window.setUndecorated(false);
+                window.setExtendedState(JFrame.NORMAL);
+                window.setSize(1024, 576);
+                window.setLocationRelativeTo(null);
+            }
             case Borderless -> {
-                window.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 window.setUndecorated(true);
+                window.setSize(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight());
+                window.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
             case FullScreen -> {
-                window.get().setExtendedState(JFrame.MAXIMIZED_BOTH);
-                window.get().setUndecorated(true);
-                window.get().add(this);
-                window.get().setVisible(true);
+                window.setUndecorated(true);
+                device.setFullScreenWindow(window);
             }
         }
+        window.setVisible(true);
 
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.screenState = screenState;
     }
 
     @Override

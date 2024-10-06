@@ -7,9 +7,9 @@ import jico.Ico;
 import jico.ImageReadException;
 
 import javax.swing.JFrame;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import javax.swing.JButton;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,6 +21,7 @@ public class Main {
         window.setSize(1024, 576);
         window.setResizable(true);
         window.setLocationRelativeTo(null);
+        window.setAutoRequestFocus(true);
 
         try (InputStream inputStream = Main.class.getResourceAsStream("/favicon.ico")) {
             if (inputStream != null) {
@@ -36,20 +37,24 @@ public class Main {
         window.setLayout(new BorderLayout());
 
         DesktopScreen screen = new DesktopScreen(window, ScreenFPS.FPS60, ScreenState.Window);
+
+        JButton btn1 = new JButton("Full-Screen");
+        btn1.addActionListener(_ -> screen.setScreenState(ScreenState.FullScreen));
+        JButton btn2 = new JButton("Normal");
+        btn2.addActionListener(_ -> screen.setScreenState(ScreenState.Window));
+        JButton btn3 = new JButton("Borderless");
+        btn3.addActionListener(_ -> screen.setScreenState(ScreenState.Borderless));
+        screen.add(btn1);
+        screen.add(btn2);
+        screen.add(btn3);
+        screen.setBackground(Color.BLUE);
+
         window.add(screen, BorderLayout.CENTER);
 
         GameLoop gameLoop = new GameLoop(screen);
         gameLoop.startGame();
 
-        screen.setBackground(Color.BLUE);
-
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                gameLoop.stopGame();
-            }
-        });
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         window.setVisible(true);
     }
