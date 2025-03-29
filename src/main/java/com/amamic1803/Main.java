@@ -36,6 +36,19 @@ public class Main {
 
         window.setLayout(new BorderLayout());
 
+        DesktopScreen screen = getDesktopScreen(window);
+
+        window.add(screen, BorderLayout.CENTER);
+
+        GameLoop gameLoop = new GameLoop(screen);
+        gameLoop.startGame();
+
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        window.setVisible(true);
+    }
+
+    private static DesktopScreen getDesktopScreen(JFrame window) {
         DesktopScreen screen = new DesktopScreen(window, ScreenFPS.FPS60, ScreenState.Window);
 
         JButton btn1 = new JButton("Full-Screen");
@@ -49,14 +62,7 @@ public class Main {
         screen.add(btn3);
         screen.setBackground(Color.BLUE);
 
-        window.add(screen, BorderLayout.CENTER);
-
-        GameLoop gameLoop = new GameLoop(screen);
-        gameLoop.startGame();
-
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        window.setVisible(true);
+        return screen;
     }
 
     public static boolean isEven(int number) {

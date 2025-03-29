@@ -14,9 +14,10 @@ public class GameLoop implements Runnable {
     }
 
     public void startGame() {
-        running.set(true);
-        gameThread = new Thread(this);
-        gameThread.start();
+        if (!running.getAndSet(true)) {
+            gameThread = new Thread(this);
+            gameThread.start();
+        }
     }
 
     public void stopGame() {
@@ -29,8 +30,10 @@ public class GameLoop implements Runnable {
         }
     }
 
-    public void update() {
+    public boolean update() {
+        System.out.println("Doing game logic...");
         System.out.println("Game loop running...");
+        return true;
     }
 
     @Override
@@ -38,8 +41,9 @@ public class GameLoop implements Runnable {
         while (running.get()) {
             double startTime = System.nanoTime();
 
-            update();
-            screen.redraw();
+            if (update()) {
+                screen.redraw();
+            }
 
             double interval = (double) 1_000_000_000 / screen.getFPS();
             double elapsedTime = System.nanoTime() - startTime;

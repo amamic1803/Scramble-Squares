@@ -1,6 +1,6 @@
 package com.amamic1803.screen;
 
-import com.amamic1803.drawing.DrawingObject;
+import com.amamic1803.drawing.Paintable;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -14,7 +14,7 @@ import java.util.List;
 public class DesktopScreen extends JPanel implements Screen {
     private int FPS;
     private final WeakReference<JFrame> window;
-    private List<DrawingObject> drawingObjects = new ArrayList<>();
+    private List<Paintable> drawingObjects = new ArrayList<>();
     private ScreenState screenState;
     private final static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
@@ -22,6 +22,7 @@ public class DesktopScreen extends JPanel implements Screen {
         this.window = new WeakReference<>(window);
         this.FPS = fps.getValue();
         this.screenState = screenState;
+        this.setDoubleBuffered(true);
     }
 
     @Override
@@ -68,6 +69,17 @@ public class DesktopScreen extends JPanel implements Screen {
         window.setVisible(true);
 
         this.screenState = screenState;
+        redraw();
+    }
+
+    @Override
+    public List<Paintable> getDrawingObjects() {
+        return drawingObjects;
+    }
+
+    @Override
+    public void setDrawingObjects(List<Paintable> drawingObjects) {
+        this.drawingObjects = drawingObjects;
     }
 
     @Override
@@ -76,17 +88,10 @@ public class DesktopScreen extends JPanel implements Screen {
     }
 
     @Override
-    public List<DrawingObject> getDrawingObjects() {
-        return drawingObjects;
-    }
-
-    @Override
-    public void setDrawingObjects(List<DrawingObject> drawingObjects) {
-        this.drawingObjects = drawingObjects;
-    }
-
-    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        for (Paintable drawingObject : drawingObjects) {
+            drawingObject.paintShape(g);
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.amamic1803.screen;
 
-import com.amamic1803.drawing.DrawingObject;
+import com.amamic1803.drawing.Paintable;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface Screen {
     void setFPS(ScreenFPS fps);
     ScreenState getScreenState();
     void setScreenState(ScreenState screenState);
+    List<Paintable> getDrawingObjects();
+    void setDrawingObjects(List<Paintable> drawingObjects);
     void redraw();
-    List<DrawingObject> getDrawingObjects();
-    void setDrawingObjects(List<DrawingObject> drawingObjects);
 }
