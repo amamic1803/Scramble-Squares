@@ -1,34 +1,97 @@
-name: Build
+name: Build and test
 
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
-
-env:
-  CARGO_TERM_COLOR: always
+on: [ push, pull_request ]
 
 jobs:
-  build:
-    name: Build
+  build-jar:
+    name: Build JAR (${{ matrix.platform }})
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+        platform: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.platform }}
     defaults:
       run:
         shell: bash
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '22'
-
-      - name: Build
+      - name: Build JAR file
         run: |
           chmod +x ./gradlew
-          ./gradlew build
+          ./gradlew packageReleaseUberJarForCurrentOS
+
+  build-website:
+    name: Build website
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build website
+        run: |
+          chmod +x ./gradlew
+          ./gradlew wasmJsBrowserDistribution
+
+  build-installer:
+    name: Build native installer (${{ matrix.platform }})
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build installer file
+        run: |
+          chmod +x ./gradlew
+          ./gradlew packageReleaseDistributionForCurrentOS
+
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build APK file
+        env:
+          SIGNING_KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          echo $SIGNING_KEYSTORE_BASE64 | base64 -d > ./androidApp/keystore.jks
+          export SIGNING_KEYSTORE_PATH="keystore.jks"
+          chmod +x ./gradlew
+          ./gradlew assembleRelease
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run tests
+        run: |
+          chmod +x ./gradlew
+          ./gradlew check

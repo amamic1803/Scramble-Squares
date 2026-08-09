@@ -1,8 +1,11 @@
-# Ignore IntelliJ IDEA project files
 .idea
-
-# Ignore Gradle project-specific cache directory
 .gradle
-
-# Ignore Gradle build output directory
 build
+kotlin-js-store
+.kotlin
+local.properties
+.DS_Store
+*.iml
+*.jks
+.env
+release
