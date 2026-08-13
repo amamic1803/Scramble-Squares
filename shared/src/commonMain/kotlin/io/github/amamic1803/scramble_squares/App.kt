@@ -1,48 +1,39 @@
 package io.github.amamic1803.scramble_squares
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
-
-import scramble_squares.shared.generated.resources.Res
-import scramble_squares.shared.generated.resources.compose_multiplatform
+import io.github.amamic1803.scramble_squares.components.Background
+import io.github.amamic1803.scramble_squares.pages.Game
+import io.github.amamic1803.scramble_squares.pages.Menu
+import io.github.amamic1803.scramble_squares.pages.Page
+import io.github.amamic1803.scramble_squares.pages.Settings
+import io.github.amamic1803.scramble_squares.theme.appTypography
+import io.github.amamic1803.scramble_squares.theme.darkScheme
+import io.github.amamic1803.scramble_squares.theme.lightScheme
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    val isSystemDark = isSystemInDarkTheme()
+    var darkTheme by remember { mutableStateOf(isSystemDark) }
+    val toggleTheme = { darkTheme = !darkTheme }
+
+    var page by remember { mutableStateOf(Page.Menu) }
+    val setPage = { newPage: Page -> page = newPage }
+
+    MaterialTheme(
+        colorScheme = if (darkTheme) darkScheme else lightScheme,
+        typography = appTypography()
+    ) {
+        Background(
+            dark = darkTheme
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
+            when (page) {
+                Page.Menu -> Menu(page, setPage)
+                Page.Game -> Game(page, setPage)
+                Page.Settings -> Settings(page, setPage, toggleTheme)
             }
         }
     }
