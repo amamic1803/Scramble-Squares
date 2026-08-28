@@ -15,7 +15,7 @@ composeMultiplatform = "1.11.1"
 jdk-vendor="adoptium"
 jdk-version="21"
 kotlin = "2.4.10"
-kotlin-wrappers = "2026.8.0"
+kotlin-wrappers = "2026.8.2"
 kotlinx-coroutines = "1.11.0"
 material3 = "1.11.0-alpha07"
 

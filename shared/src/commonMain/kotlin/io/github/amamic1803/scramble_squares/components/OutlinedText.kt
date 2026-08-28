@@ -9,15 +9,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 
 @Composable
+@Preview
 fun OutlinedText(
-    text: String,
+    text: String = "Hello World",
     modifier: Modifier = Modifier,
     fillColor: Color = Color.White,
-    outlineColor: Color = Color(0xFF2196F3),   // nice blue
-    outlineWidth: Float = 3f,                  // thickness in px (try 2f–4f)
+    outlineColor: Color = Color(0xFF2196F3),
+    outlineWidth: Float = 3f,                  // thickness in px
     style: TextStyle = LocalTextStyle.current,
     fontSize: TextUnit = TextUnit.Unspecified,
 ) {
