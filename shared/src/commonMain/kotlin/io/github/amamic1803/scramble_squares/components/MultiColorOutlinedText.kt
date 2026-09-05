@@ -1,18 +1,19 @@
 package io.github.amamic1803.scramble_squares.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
-internal val rainbowOutlines = listOf(
+private val rainbowOutlines = listOf(
     Color(0xFFE53935), // red
     Color(0xFFFB8C00), // orange
     Color(0xFFFDD835), // yellow
@@ -29,24 +30,41 @@ fun MultiColorOutlinedText(
     modifier: Modifier = Modifier,
     fillColor: Color = Color.White,
     outlineWidth: Float = 3f,
-    style: TextStyle = LocalTextStyle.current,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    letterSpacing: TextUnit = 0.sp,             // extra space between letters
+    style: TextStyle = LocalTextStyle.current,       // can specify font size, letter spacing, ...
 ) {
-    Row(
+    val density = LocalDensity.current
+    val letterSpacingDp = remember(density, style.letterSpacing) {
+        with(density) {
+            style.letterSpacing.toDp()
+        }
+    }
+    val wordSpacingDp = remember(density, style.fontSize, letterSpacingDp) {
+        with(density) {
+            style.fontSize.toDp() * 0.35f + letterSpacingDp * 2f
+        }
+    }
+
+    val words = remember(text) { text.split(Regex("\\s+")) }
+    var colorIndex = 0
+    FlowRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(letterSpacing.value.dp)
+        horizontalArrangement = Arrangement.spacedBy(wordSpacingDp, Alignment.CenterHorizontally),
+        verticalArrangement = Arrangement.Center
     ) {
-        text.forEachIndexed { index, char ->
-            val outlineColor = outlineColors[index % outlineColors.size]
-            OutlinedText(
-                text = char.toString(),
-                fillColor = fillColor,
-                outlineColor = outlineColor,
-                outlineWidth = outlineWidth,
-                fontSize = fontSize,
-                style = style
-            )
+        words.forEach { word ->
+            Row(horizontalArrangement = Arrangement.spacedBy(letterSpacingDp)) {
+                word.forEach { char ->
+                    val outlineColor = outlineColors[colorIndex % outlineColors.size]
+                    OutlinedText(
+                        text = char.toString(),
+                        fillColor = fillColor,
+                        outlineColor = outlineColor,
+                        outlineWidth = outlineWidth,
+                        style = style
+                    )
+                    colorIndex++
+                }
+            }
         }
     }
 }

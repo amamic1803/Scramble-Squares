@@ -50,6 +50,10 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
+            implementation(libs.multiplatform.settings.datastore)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.androidx.datastore.preferences.core)
+            implementation(libs.multiplatform.settings.test)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -60,12 +64,22 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.coroutines)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+        jvmMain.dependencies {
+            implementation(libs.multiplatform.settings.datastore)
+            implementation(libs.androidx.datastore.preferences.core)
+        }
         jsMain.dependencies {
             implementation(libs.wrappers.browser)
+            implementation(libs.multiplatform.settings.make.observable)
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.multiplatform.settings.make.observable)
         }
     }
 }
